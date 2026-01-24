@@ -30,7 +30,8 @@ if (!dir.exists(filepath)) {
   dir.create(filepath)
 }
 
-filename <- 'ASD_supp.xlsx'
+filename <- 'SuppTables_S4-S10_ASD.xlsx'
+
 # How many tables are there already?
 tbl_start <- 3
 # How many clusters are there?
@@ -43,7 +44,7 @@ strClustsRange <- paste0('(1-', numClusts, ')')
 # README Tab ----
 # Construct README dataframe as we go
 readme_df <- data.frame('TableNumber'=character(),
-                        'SheetName'=character(),
+                        # 'SheetName'=character(),
                         'Variable'=character(),
                         'Description'=character())
 
@@ -72,7 +73,7 @@ gene_df$state <- states[genes]
 colnames(gene_df) <- c('GeneEnsembl', 'GeneSymbol', 'Cluster', 'State')
 
 readme_df <- rbind(readme_df, data.frame('TableNumber'=rep(paste0('Table S', tbl_start+1), ncol(gene_df)),
-                                         'SheetName'=rep('Genes', ncol(gene_df)),
+                                         # 'SheetName'=rep('Genes', ncol(gene_df)),
                                          'Variable'=colnames(gene_df),
                                          'Description'=c("Gene ensembl ID",
                                                          "Gene symbol",
@@ -96,7 +97,7 @@ clust_df$ClustLabel <- unlist(lapply(1:numAllClusts, function(x) if (x > numClus
                                      else {'Other'}))
 
 readme_df <- rbind(readme_df, data.frame('TableNumber'=rep(paste0('Table S', tbl_start+2), ncol(clust_df)),
-                                         'SheetName'=rep('Clusters', ncol(clust_df)),
+                                         # 'SheetName'=rep('Clusters', ncol(clust_df)),
                                          'Variable'=colnames(clust_df),
                                          'Description'=c(paste0("Cluster label ", strAllClustsRange),
                                                          "Number of active genes in cluster",
@@ -121,7 +122,7 @@ for (cellType in cellTypes) {
 }
 
 readme_df <- rbind(readme_df, data.frame('TableNumber'=rep(paste0('Table S', tbl_start+3), ncol(markergenes_df)),
-                                         'SheetName'=rep('MarkerGenes', ncol(markergenes_df)),
+                                         # 'SheetName'=rep('MarkerGenes', ncol(markergenes_df)),
                                          'Variable'=colnames(markergenes_df),
                                          'Description'=c("Cell type for which this is a marker gene for",
                                                          "Gene ensembl ID of marker gene",
@@ -134,7 +135,7 @@ OR_df <- OR_df[(OR_df$Cluster <= numClusts),]
 OR_df$Significant <- OR_df$PValue < (0.05/nrow(OR_df))
 OR_df <- OR_df[, c('OR', 'PValue', 'Significant', 'Cluster', 'CellType')]
 readme_df <- rbind(readme_df, data.frame('TableNumber'=rep(paste0('Table S', tbl_start+4), ncol(OR_df)),
-                                         'SheetName'=rep('OR', ncol(OR_df)),
+                                         # 'SheetName'=rep('OR', ncol(OR_df)),
                                          'Variable'=colnames(OR_df),
                                          'Description'=c("Odds ratio (OR) for CTS marker gene enrichment in cluster (Fisher's exact test)",
                                                          "P-value for the significance of CTS marker enrichment in cluster (Fisher's exact test)",
@@ -161,10 +162,11 @@ readme_df <- rbind(readme_df, data.frame('TableNumber'=c(paste0('Table S', tbl_s
                                                          rep(paste0('Tables S', tbl_start+5, '/S', tbl_start+6, '/S', tbl_start+7), 11), 
                                                          rep(paste0('Tables S', tbl_start+6, '/S', tbl_start+7), 3),
                                                          rep(paste0('Tables S', tbl_start+5, '/S', tbl_start+6, '/S', tbl_start+7), 2)),
-                                         'SheetName'=c(rep('GO_Cluster', 1),
-                                                       rep('GO_<Etiological/Emergent/Cluster>', 11),
-                                                       rep('GO_<Etiological/Emergent>', 3),
-                                                       rep('GO_<Etiological/Emergent/Cluster>', 2)),                                         'Variable'=c('Cluster', colnames(etiol_df)),
+                                         # 'SheetName'=c(rep('GO_Cluster', 1),
+                                         #               rep('GO_<Etiological/Emergent/Cluster>', 11),
+                                         #               rep('GO_<Etiological/Emergent>', 3),
+                                         #               rep('GO_<Etiological/Emergent/Cluster>', 2)),
+                                         'Variable'=c('Cluster', colnames(etiol_df)),
                                          'Description'=c(paste0("Cluster label ", strClustsRange),
                                                          "Gene ontology ID",
                                                          "Description of GO term",
@@ -213,67 +215,66 @@ openxlsx::writeData(
   rowNames = FALSE # Matches your original intent
 )
 # Add Genes sheet
-openxlsx::addWorksheet(wb, 'Genes')
+openxlsx::addWorksheet(wb, 'Table S4')
 openxlsx::writeData(
   wb, 
-  sheet = 'Genes', 
+  sheet = 'Table S4', 
   x = gene_df, 
   colNames = TRUE, 
   rowNames = FALSE # Matches your original intent
 )
 # Add Clusters sheet
-openxlsx::addWorksheet(wb, 'Clusters')
+openxlsx::addWorksheet(wb, 'Table S5')
 openxlsx::writeData(
   wb, 
-  sheet = 'Clusters', 
+  sheet = 'Table S5', 
   x = clust_df, 
   colNames = TRUE, 
   rowNames = FALSE # Matches your original intent
 )
 # Add MarkerGenes sheet
-openxlsx::addWorksheet(wb, 'MarkerGenes')
+openxlsx::addWorksheet(wb, 'Table S6')
 openxlsx::writeData(
   wb, 
-  sheet = 'MarkerGenes', 
+  sheet = 'Table S6', 
   x = markergenes_df, 
   colNames = TRUE, 
   rowNames = FALSE # Matches your original intent
 )
 # Add OR sheet
-openxlsx::addWorksheet(wb, 'OR')
+openxlsx::addWorksheet(wb, 'Table S7')
 openxlsx::writeData(
   wb, 
-  sheet = 'OR', 
+  sheet = 'Table S7', 
   x = OR_df, 
   colNames = TRUE, 
   rowNames = FALSE # Matches your original intent
 )
 # Add GO_Etiological sheet
-openxlsx::addWorksheet(wb, 'GO_Etiological')
+openxlsx::addWorksheet(wb, 'Table S8')
 openxlsx::writeData(
   wb, 
-  sheet = 'GO_Etiological', 
+  sheet = 'Table S8', 
   x = etiol_df, 
   colNames = TRUE, 
   rowNames = FALSE # Matches your original intent
 )
 # Add GO_Emergent sheet
-openxlsx::addWorksheet(wb, 'GO_Emergent')
+openxlsx::addWorksheet(wb, 'Table S9')
 openxlsx::writeData(
   wb, 
-  sheet = 'GO_Emergent', 
+  sheet = 'Table S9', 
   x = emerg_df, 
   colNames = TRUE, 
   rowNames = FALSE # Matches your original intent
 )
 # Add GO_Cluster sheet
-openxlsx::addWorksheet(wb, 'GO_Cluster')
+openxlsx::addWorksheet(wb, 'Table S10')
 openxlsx::writeData(
   wb, 
-  sheet = 'GO_Cluster', 
+  sheet = 'Table S10', 
   x = GOclust_df, 
   colNames = TRUE, 
   rowNames = FALSE # Matches your original intent
 )
 openxlsx::saveWorkbook(wb, paste0(filepath, filename), overwrite = TRUE)
-

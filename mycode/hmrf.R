@@ -22,9 +22,6 @@
 run_hmrf <- function(genes, dezscores, genzscores, graph, deinit, geninit, detrim, gentrim,
                                                 numiter, b0_lb=-20, b1_ub=10, savefile=NULL, verbose=T) {
   
-  # TO ADD: 
-  # early stopping, convergence
-  
   # Checks
   genes_len <- length(genes)
   dez_len <- length(dezscores)
@@ -95,7 +92,6 @@ run_hmrf <- function(genes, dezscores, genzscores, graph, deinit, geninit, detri
   b01 <- b02 <- b03 <- b11 <- b12 <- 0
   
   # Initialize normal parameters (Alg 2, Line 7, Eqn 8)
-  # TODO: Not using fixindex == 3 for sigmas currently
   mu1 <- mean(dezscores[(Iupdate %in% c(1, 2)) & (fixindex==4)])
   sigma1 <- mean((dezscores[Iupdate %in% c(1, 2)] - mu1)^2) # sd(dezscores[Iupdate %in% c(1, 2)])^2
   
